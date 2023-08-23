@@ -1,19 +1,38 @@
 import React, { useState } from "react";
 import "./Signup.css"; //???
 import { Typography, TextField, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SignUpPage() {
   const [name, setName] = useState<string>("");
+  const [familyName, setFamilyName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confPassword, setConfPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password && password === confPassword) {
-      try {
 
+    if (email && password) {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://byrdbox-env.eba-4kxk4yka.eu-north-1.elasticbeanstalk.com/auth/signup",
+          data: {
+            name,
+            familyName,
+            phoneNumber,
+            email,
+            password,
+          },
+        });
+        if(response.status === 200 && response.statusText === 'OK') {
+          console.log(response);
+          navigate('/login');
+        }
       } catch (err) {
         console.error(err);
       }
@@ -34,6 +53,24 @@ function SignUpPage() {
           }
         />
         <TextField
+          type="text"
+          value={familyName}
+          label="family name"
+          variant="outlined"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFamilyName(e.target.value)
+          }
+        />
+        <TextField
+          type="text"
+          value={phoneNumber}
+          label="phone number"
+          variant="outlined"
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPhoneNumber(e.target.value)
+          }
+        />
+        <TextField
           type="email"
           value={email}
           label="Email"
@@ -49,15 +86,6 @@ function SignUpPage() {
           variant="outlined"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
-          }
-        />
-        <TextField
-          type="password"
-          value={confPassword}
-          label="Confirm Password"
-          variant="outlined"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setConfPassword(e.target.value)
           }
         />
         <Button type="submit" variant="contained">
