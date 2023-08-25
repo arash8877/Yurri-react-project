@@ -16,7 +16,7 @@ function SignUpPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (email && password) {
+    if (name && familyName && phoneNumber && email && password) {
       try {
         const response = await axios({
           method: "post",
@@ -29,12 +29,12 @@ function SignUpPage() {
             password,
           },
         });
-        if(response.status === 200 && response.statusText === 'OK') {
-          console.log(response);
-          navigate('/login');
+        if (response.status === 200 && response.statusText === "OK") {
+          // alert("you are registered successfully.");
+          navigate("/verify-user", { state: { email } });
         }
       } catch (err) {
-        console.error(err);
+        console.error("An error occurred:", err);
       }
     }
   };
