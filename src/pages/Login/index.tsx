@@ -27,7 +27,8 @@ function LoginPage() {
         if (response.status === 200 && response.statusText === 'OK') {
           console.log(response.data);
           const idToken = response.data.idToken
-          navigate('/projects', {state: {idToken}});
+          const accessToken = response.data.accessToken;
+          navigate('/projects', {state: {idToken, accessToken}});
         } 
       } catch(e) {
         console.error(e);
